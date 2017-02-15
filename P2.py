@@ -4,7 +4,7 @@ import signal
 import time
 import copy
 
-class player1():
+class player22):
 
 	def __init__(self):
 		pass
@@ -130,7 +130,7 @@ class player1():
 						if self.block_status[i][j] == self.opponent:
 							score -= 7
 				return score
-			return 0
+			return (self.heuristics_player() + self.heuristics_opponent())
 
 		if maximini:
 			v = -1000

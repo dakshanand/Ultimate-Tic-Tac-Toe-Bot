@@ -4,6 +4,7 @@ import signal
 import time
 import copy
 from P1 import player1
+from P2 import player2
 class TimedOutExc(Exception):
 	pass
 
@@ -186,7 +187,6 @@ def gameplay(obj1, obj2):				#game simulator
 
 		try:									#try to get player 1's move
 			p1_move = obj1.move(game_board, old_move, fl1)
-
 		except TimedOutExc:					#timeout error
 #			print e
 			WINNER = 'P2'
@@ -232,14 +232,8 @@ def gameplay(obj1, obj2):				#game simulator
 		temp_block_status = copy.deepcopy(game_board.block_status)
 		signal.alarm(TIME)
 
-
-
-
 		try:
-
 			p2_move = obj2.move(game_board, old_move, fl2)
-
-
 		except TimedOutExc:
 			WINNER = 'P1'
 			MESSAGE = 'TIME OUT'
@@ -281,7 +275,6 @@ def gameplay(obj1, obj2):				#game simulator
 	print "Winner:", WINNER
 	print "Message", MESSAGE
 
-
 	x = 0
 	d = 0
 	o = 0
@@ -314,9 +307,8 @@ if __name__ == '__main__':
 	obj2 = ''
 	option = sys.argv[1]
 	if option == '1':
-
-		obj2 = Random_Player()
 		obj1 = player1()
+		obj2 = player2()
 
 	elif option == '2':
 		obj1 = Random_Player()
