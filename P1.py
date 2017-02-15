@@ -27,11 +27,11 @@ class player1():
 				x = valid_move[0]/4
 				y = valid_move[1]/4
 				self.local_board.block_status[x][y] = '-'
-				if new_v > v:
+				if new_v >= v:
 					self.best_move = valid_move
 					v = new_v
 				alpha = max(alpha, v)
-
+				self.best_move = valid_move
 				if beta <= alpha:
 					break
 			return v
@@ -61,7 +61,7 @@ class player1():
 		self.local_board=board
 		saved=copy.deepcopy(board)
 		signal.signal(signal.SIGALRM, self.signal_handler)
-		signal.alarm(15)
+		signal.alarm(15)   # Ten seconds
 
 
 		try:
