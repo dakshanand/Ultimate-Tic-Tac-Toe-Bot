@@ -125,6 +125,12 @@ class player2():
 		center = -1
 		block = [[0 for x in range(4)] for y in range(4)]
 
+		if self.local_board.block_status[self.last_move[0]/4][self.last_move[1]/4] != '-':
+			if self.local_board.board_status[self.last_move[0]][self.last_move[1]] == self.player:
+				score += 20
+			else
+				score -= 20
+
 		for p in range(4):
 			for q in range(4):
 				center = 0
@@ -322,6 +328,7 @@ class player2():
 			valid_moves = self.local_board.find_valid_move_cells (old_move)
 			for valid_move in valid_moves:
 				self.local_board.update(old_move,valid_move,self.player)
+				self.last_move = valid_move
 				new_v = self.alphabeta (depth - 1, alpha, beta, 0, valid_move)
 				self.local_board.board_status[valid_move[0]][valid_move[1]]='-'
 				x = valid_move[0]/4
@@ -341,6 +348,7 @@ class player2():
 			for valid_move in valid_moves:
 				player_ply = "x" if self.player == "o" else "x"
 				self.local_board.update(old_move, valid_move, self.opponent)
+				self.last_move=valid_move
 				v = min(v, self.alphabeta (depth - 1, alpha, beta, 1, valid_move))
 				self.local_board.board_status[valid_move[0]][valid_move[1]]='-'
 				x = valid_move[0]/4
@@ -360,7 +368,7 @@ class player2():
 		saved=copy.deepcopy(board)
 		self.local_board = board
 		signal.signal(signal.SIGALRM, self.signal_handler)
-
+		self.last_move=(0,0)
 		signal.alarm(15)
 
 		try:
