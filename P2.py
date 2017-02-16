@@ -4,7 +4,7 @@ import signal
 import time
 import copy
 
-class player22):
+class player2():
 
 	def __init__(self):
 		pass
@@ -23,43 +23,46 @@ class player22):
 					elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 						score += 4
 
-			# for 2 blocks in a row
-			x = i
-			for y in range(3):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x][y+1] and self.local_board.block_status[x][y] == self.player:
+			# for 2 and 3 blocks in a row
+			if self.local_board.block_status[i].count(self.opponent) == 0:
+				player_count = self.local_board.block_status[i].count(self.player)
+				if player_count == 2:
 					score += 5
-			# for 3 blocks in a row
-			for y in range(2):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x][y+1] and self.local_board.block_status[x][y] == self.local_board.block_status[x][y+2] and self.local_board.block_status[x][y] == self.player:
-					score += 3
+				elif player_count == 3:
+					score += 15
 
-			# for 2 blocks in a column
-			y = i
-			for x in range(3):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x+1][y] and self.local_board.block_status[x][y] == self.player:
+			# for 2 and 3 blocks in a column
+			col = [x[i] for x in self.local_board.block_status]			#i'th column
+			if col.count(self.opponent) == 0:
+				player_count = col.count(self.player)
+				if player_count == 2:
 					score += 5
-			# for 3 blocks in a column
-			for x in range(2):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x+1][y] and self.local_board.block_status[x][y] == self.local_board.block_status[x+2][y] and self.local_board.block_status[x][y] == self.player:
-					score += 3
+				elif player_count == 3:
+					score += 15
 
-		for x in range(3):
-			# for 2 blocks in the \ diagonal
-			if self.local_board.block_status[x][x] == self.local_board.block_status[x+1][x+1] and self.local_board.block_status[x][x] == self.player:
-				score += 5
-			# for 2 blocks in the / diagonal
-			y = 3 - x
-			if self.local_board.block_status[y][x] == self.local_board.block_status[y-1][x+1] and self.local_board.block_status[y][x] == self.player:
-				score += 5
+		# for 2 and 3 blocks in the \ diagonal
+		diagonal_1 = []
+		for x in range(4):
+			diagonal_1.append(self.local_board.block_status[x][x])
 
-		for x in range(2):
-			# for 3 blocks in the \ diagonal
-			if self.local_board.block_status[x][x] == self.local_board.block_status[x+1][x+1] and self.local_board.block_status[x][x] == self.local_board.block_status[x+2][x+2] and self.local_board.block_status[x][x] == self.player:
-				score += 3
-			# for 3 blocks in the / diagonal
-			y = 3 - x
-			if self.local_board.block_status[y][x] == self.local_board.block_status[y-1][x+1] and self.local_board.block_status[x][x] == self.local_board.block_status[y-2][x+2] and self.local_board.block_status[y][x] == self.player:
-				score += 3
+		if diagonal_1.count(self.opponent) == 0:
+			player_count = diagonal_1.count(self.player)
+			if player_count == 2:
+				score += 5
+			elif player_count == 3:
+				score += 15
+
+		# for 2 and 3 blocks in the ? diagonal
+		diagonal_2 = []
+		for x in range(4):
+			diagonal_2.append(self.local_board.block_status[3-x][x])
+
+		if diagonal_2.count(self.opponent) == 0:
+			player_count = diagonal_2.count(self.player)
+			if player_count == 2:
+				score += 5
+			elif player_count == 3:
+				score += 15
 
 		return score
 
@@ -74,43 +77,224 @@ class player22):
 					elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 						score -= 4
 
-			# for 2 blocks in a row
-			x = i
-			for y in range(3):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x][y+1] and self.local_board.block_status[x][y] == self.opponent:
-					score -= 5
-			# for 3 blocks in a row
-			for y in range(2):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x][y+1] and self.local_board.block_status[x][y] == self.local_board.block_status[x][y+2] and self.local_board.block_status[x][y] == self.opponent:
-					score -= 3
+			# for 2 and 3 blocks in a row
+			if self.local_board.block_status[i].count(self.player) == 0:
+				opponent_count = self.local_board.block_status[i].count(self.opponent)
+				if opponent_count == 2:
+					score += 5
+				elif opponent_count == 3:
+					score += 15
 
-			# for 2 blocks in a column
-			y = i
-			for x in range(3):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x+1][y] and self.local_board.block_status[x][y] == self.opponent:
-					score -= 5
-			# for 3 blocks in a column
-			for x in range(2):
-				if self.local_board.block_status[x][y] == self.local_board.block_status[x+1][y] and self.local_board.block_status[x][y] == self.local_board.block_status[x+2][y] and self.local_board.block_status[x][y] == self.opponent:
-					score -= 3
+			# for 2 and 3 blocks in a column
+			col = [x[i] for x in self.local_board.block_status]			#i'th column
+			if col.count(self.player) == 0:
+				opponent_count = col.count(self.opponent)
+				if opponent_count == 2:
+					score += 5
+				elif opponent_count == 3:
+					score += 15
 
-		for x in range(3):
-			# for 2 blocks in the \ diagonal
-			if self.local_board.block_status[x][x] == self.local_board.block_status[x+1][x+1] and self.local_board.block_status[x][x] == self.opponent:
-				score -= 5
-			# for 2 blocks in the / diagonal
-			y = 3 - x
-			if self.local_board.block_status[y][x] == self.local_board.block_status[y-1][x+1] and self.local_board.block_status[y][x] == self.opponent:
-				score -= 5
+		# for 2 and 3 blocks in the \ diagonal
+		diagonal_1 = []
+		for x in range(4):
+			diagonal_1.append(self.local_board.block_status[x][x])
 
-		for x in range(2):
-			# for 3 blocks in the \ diagonal
-			if self.local_board.block_status[x][x] == self.local_board.block_status[x+1][x+1] and self.local_board.block_status[x][x] == self.local_board.block_status[x+2][x+2] and self.local_board.block_status[x][x] == self.opponent:
-				score -= 3
-			# for 3 blocks in the / diagonal
-			y = 3 - x
-			if self.local_board.block_status[y][x] == self.local_board.block_status[y-1][x+1] and self.local_board.block_status[x][x] == self.local_board.block_status[y-2][x+2] and self.local_board.block_status[y][x] == self.opponent:
-				score -= 3
+		if diagonal_1.count(self.player) == 0:
+			opponent_count = diagonal_1.count(self.opponent)
+			if opponent_count == 2:
+				score += 5
+			elif opponent_count == 3:
+				score += 15
+
+		# for 2 and 3 blocks in the ? diagonal
+		diagonal_2 = []
+		for x in range(4):
+			diagonal_2.append(self.local_board.block_status[3-x][x])
+
+		if diagonal_2.count(self.player) == 0:
+			opponent_count = diagonal_2.count(self.opponent)
+			if opponent_count == 2:
+				score += 5
+			elif opponent_count == 3:
+				score += 15
+
+		return score
+
+	def heuristics_player_block(self):
+		score = 0
+		center = -1
+		block = [[0 for x in range(4)] for y in range(4)]
+
+		for p in range(4):
+			for q in range(4):
+				center = 0
+				if p >= 1 and p <= 2 and q >= 1 and q <= 2:
+					center = 1
+
+				for i in range(4):
+					for j in range(4):
+						block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
+
+				for i in range(4):
+					for j in range(4):
+						# winning any of the 4 center blocks
+						if block[i][j] == self.player:
+							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
+								score += 0.5
+								if center:
+									score += 0.2
+
+							# winning any of the 4 corner blocks
+							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
+								score += 0.2
+								if center:
+									score += 0.2
+
+					# for 2 and 3 blocks in a row
+					if block[i].count(self.opponent) == 0:
+						player_count = block[i].count(self.player)
+						if player_count == 2:
+							score += 0.5
+							if center:
+								score += 0.2
+						elif player_count == 3:
+							score += 1.5
+							if center:
+								score += 0.2
+
+					# for 2 and 3 blocks in a column
+					col = [x[i] for x in block]			#i'th column
+					if col.count(self.opponent) == 0:
+						player_count = col.count(self.player)
+						if player_count == 2:
+							score += 0.5
+							if center:
+								score += 0.2
+						elif player_count == 3:
+							score += 1.5
+							if center:
+								score += 0.2
+
+				# for 2 and 3 blocks in the \ diagonal
+				diagonal_1 = []
+				for x in range(4):
+					diagonal_1.append(block[x][x])
+
+				if diagonal_1.count(self.opponent) == 0:
+					player_count = diagonal_1.count(self.player)
+					if player_count == 2:
+						score += 0.5
+						if center:
+							score += 0.2
+					elif player_count == 3:
+						score += 1.5
+						if center:
+							score += 0.2
+
+				# for 2 and 3 blocks in the ? diagonal
+				diagonal_2 = []
+				for x in range(4):
+					diagonal_2.append(block[3-x][x])
+
+				if diagonal_2.count(self.opponent) == 0:
+					player_count = diagonal_2.count(self.player)
+					if player_count == 2:
+						score += 0.5
+						if center:
+							score += 0.2
+					elif player_count == 3:
+						score += 1.5
+						if center:
+							score += 0.2
+
+		return score
+
+	def heuristics_opponent_block(self):
+		score = 0
+		center = -1
+		block = [[0 for x in range(4)] for y in range(4)]
+
+		for p in range(4):
+			for q in range(4):
+				center = 0
+				if p >= 1 and p <= 2 and q >= 1 and q <= 2:
+					center = 1
+
+				for i in range(4):
+					for j in range(4):
+						block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
+
+				for i in range(4):
+					for j in range(4):
+						# winning any of the 4 center blocks
+						if block[i][j] == (self.opponent):
+							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
+								score += 0.5
+								if center:
+									score += 0.2
+
+							# winning any of the 4 corner blocks
+							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
+								score += 0.2
+								if center:
+									score += 0.2
+
+					# for 2 and 3 blocks in a row
+					if block[i].count(self.player) == 0:
+						opponent_count = block[i].count(self.opponent)
+						if opponent_count == 2:
+							score += 0.5
+							if center:
+								score += 0.2
+						elif opponent_count == 3:
+							score += 1.5
+							if center:
+								score += 0.2
+
+					# for 2 and 3 blocks in a column
+					col = [x[i] for x in block]			#i'th column
+					if col.count(self.player) == 0:
+						opponent_count = col.count(self.opponent)
+						if opponent_count == 2:
+							score += 0.5
+							if center:
+								score += 0.2
+						elif opponent_count == 3:
+							score += 1.5
+							if center:
+								score += 0.2
+
+				# for 2 and 3 blocks in the \ diagonal
+				diagonal_1 = []
+				for x in range(4):
+					diagonal_1.append(block[x][x])
+
+				if diagonal_1.count(self.player) == 0:
+					opponent_count = diagonal_1.count(self.opponent)
+					if opponent_count == 2:
+						score += 0.5
+						if center:
+							score += 0.2
+					elif opponent_count == 3:
+						score += 1.5
+						if center:
+							score += 0.2
+
+				# for 2 and 3 blocks in the ? diagonal
+				diagonal_2 = []
+				for x in range(4):
+					diagonal_2.append(block[3-x][x])
+
+				if diagonal_2.count(self.player) == 0:
+					opponent_count = diagonal_2.count(self.opponent)
+					if opponent_count == 2:
+						score += 0.5
+						if center:
+							score += 0.2
+					elif opponent_count == 3:
+						score += 1.5
+						if center:
+							score += 0.2
 
 		return score
 
@@ -130,22 +314,24 @@ class player22):
 						if self.block_status[i][j] == self.opponent:
 							score -= 7
 				return score
-			return (self.heuristics_player() + self.heuristics_opponent())
+
+			return (self.heuristics_player() + self.heuristics_opponent() + self.heuristics_player_block() - self.heuristics_opponent_block())
 
 		if maximini:
 			v = -1000
 			valid_moves = self.local_board.find_valid_move_cells (old_move)
 			for valid_move in valid_moves:
+				self.local_board.update(old_move,valid_move,self.player)
 				new_v = self.alphabeta (depth - 1, alpha, beta, 0, valid_move)
 				self.local_board.board_status[valid_move[0]][valid_move[1]]='-'
 				x = valid_move[0]/4
 				y = valid_move[1]/4
 				self.local_board.block_status[x][y] = '-'
-				if new_v >= v:
-					self.best_move = valid_move
+				if new_v > v:
+					if self.level==depth:
+						self.best_move = valid_move
 					v = new_v
 				alpha = max(alpha, v)
-				self.best_move = valid_move
 				if beta <= alpha:
 					break
 			return v
@@ -154,7 +340,7 @@ class player22):
 			valid_moves = self.local_board.find_valid_move_cells (old_move)
 			for valid_move in valid_moves:
 				player_ply = "x" if self.player == "o" else "x"
-				self.local_board.update(old_move, valid_move, player_ply)
+				self.local_board.update(old_move, valid_move, self.opponent)
 				v = min(v, self.alphabeta (depth - 1, alpha, beta, 1, valid_move))
 				self.local_board.board_status[valid_move[0]][valid_move[1]]='-'
 				x = valid_move[0]/4
@@ -174,15 +360,16 @@ class player22):
 		saved=copy.deepcopy(board)
 		self.local_board = board
 		signal.signal(signal.SIGALRM, self.signal_handler)
-		signal.alarm(15)   # 15 seconds
+
+		signal.alarm(15)
 
 		try:
-			for i in range(5,100):
+			for i in range(4,100):
+				self.level=i
 				self.alphabeta (i, -1000, 1000, 1, old_move)
 				best = self.best_move
 				self.local_board=saved
 
 		except Exception, msg:
 			pass
-
 		return best
