@@ -7,7 +7,7 @@ import copy
 class player2():
 
 	def __init__(self):
-		pass
+		self.block = [[0 for x in range(4)] for y in range(4)]
 
 	def heuristics_player(self):
 		score = 0
@@ -123,42 +123,43 @@ class player2():
 	def heuristics_player_block(self):
 		score = 0
 		center = -1
-		block = [[0 for x in range(4)] for y in range(4)]
 
 		if self.local_board.block_status[self.last_move[0]/4][self.last_move[1]/4] != '-':
 			if self.local_board.board_status[self.last_move[0]][self.last_move[1]] == self.player:
 				score += 20
-			else
+			else:
 				score -= 20
 
 		for p in range(4):
 			for q in range(4):
+				if self.local_board.block_status[p][q] != '-':
+					continue
 				center = 0
 				if p >= 1 and p <= 2 and q >= 1 and q <= 2:
 					center = 1
 
 				for i in range(4):
 					for j in range(4):
-						block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
+						self.block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
 
 				for i in range(4):
 					for j in range(4):
-						# winning any of the 4 center blocks
-						if block[i][j] == self.player:
+						# winning any of the 4 center self.blocks
+						if self.block[i][j] == self.player:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
 								score += 0.5
 								if center:
 									score += 0.2
 
-							# winning any of the 4 corner blocks
+							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 								score += 0.2
 								if center:
 									score += 0.2
 
-					# for 2 and 3 blocks in a row
-					if block[i].count(self.opponent) == 0:
-						player_count = block[i].count(self.player)
+					# for 2 and 3 self.blocks in a row
+					if self.block[i].count(self.opponent) == 0:
+						player_count = self.block[i].count(self.player)
 						if player_count == 2:
 							score += 0.5
 							if center:
@@ -168,8 +169,8 @@ class player2():
 							if center:
 								score += 0.2
 
-					# for 2 and 3 blocks in a column
-					col = [x[i] for x in block]			#i'th column
+					# for 2 and 3 self.blocks in a column
+					col = [x[i] for x in self.block]
 					if col.count(self.opponent) == 0:
 						player_count = col.count(self.player)
 						if player_count == 2:
@@ -181,10 +182,10 @@ class player2():
 							if center:
 								score += 0.2
 
-				# for 2 and 3 blocks in the \ diagonal
+				# for 2 and 3 self.blocks in the \ diagonal
 				diagonal_1 = []
 				for x in range(4):
-					diagonal_1.append(block[x][x])
+					diagonal_1.append(self.block[x][x])
 
 				if diagonal_1.count(self.opponent) == 0:
 					player_count = diagonal_1.count(self.player)
@@ -197,10 +198,10 @@ class player2():
 						if center:
 							score += 0.2
 
-				# for 2 and 3 blocks in the ? diagonal
+				# for 2 and 3 self.blocks in the / diagonal
 				diagonal_2 = []
 				for x in range(4):
-					diagonal_2.append(block[3-x][x])
+					diagonal_2.append(self.block[3-x][x])
 
 				if diagonal_2.count(self.opponent) == 0:
 					player_count = diagonal_2.count(self.player)
@@ -218,36 +219,37 @@ class player2():
 	def heuristics_opponent_block(self):
 		score = 0
 		center = -1
-		block = [[0 for x in range(4)] for y in range(4)]
 
 		for p in range(4):
 			for q in range(4):
+				if self.local_board.block_status[p][q] != '-':
+					continue
 				center = 0
 				if p >= 1 and p <= 2 and q >= 1 and q <= 2:
 					center = 1
 
 				for i in range(4):
 					for j in range(4):
-						block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
+						self.block[i][j] = self.local_board.board_status[4*p+i][4*q+j]
 
 				for i in range(4):
 					for j in range(4):
-						# winning any of the 4 center blocks
-						if block[i][j] == (self.opponent):
+						# winning any of the 4 center self.blocks
+						if self.block[i][j] == (self.opponent):
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
 								score += 0.5
 								if center:
 									score += 0.2
 
-							# winning any of the 4 corner blocks
+							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 								score += 0.2
 								if center:
 									score += 0.2
 
-					# for 2 and 3 blocks in a row
-					if block[i].count(self.player) == 0:
-						opponent_count = block[i].count(self.opponent)
+					# for 2 and 3 self.blocks in a row
+					if self.block[i].count(self.player) == 0:
+						opponent_count = self.block[i].count(self.opponent)
 						if opponent_count == 2:
 							score += 0.5
 							if center:
@@ -257,8 +259,8 @@ class player2():
 							if center:
 								score += 0.2
 
-					# for 2 and 3 blocks in a column
-					col = [x[i] for x in block]			#i'th column
+					# for 2 and 3 self.blocks in a column
+					col = [x[i] for x in self.block]
 					if col.count(self.player) == 0:
 						opponent_count = col.count(self.opponent)
 						if opponent_count == 2:
@@ -270,10 +272,10 @@ class player2():
 							if center:
 								score += 0.2
 
-				# for 2 and 3 blocks in the \ diagonal
+				# for 2 and 3 self.blocks in the \ diagonal
 				diagonal_1 = []
 				for x in range(4):
-					diagonal_1.append(block[x][x])
+					diagonal_1.append(self.block[x][x])
 
 				if diagonal_1.count(self.player) == 0:
 					opponent_count = diagonal_1.count(self.opponent)
@@ -286,10 +288,10 @@ class player2():
 						if center:
 							score += 0.2
 
-				# for 2 and 3 blocks in the ? diagonal
+				# for 2 and 3 self.blocks in the / diagonal
 				diagonal_2 = []
 				for x in range(4):
-					diagonal_2.append(block[3-x][x])
+					diagonal_2.append(self.block[3-x][x])
 
 				if diagonal_2.count(self.player) == 0:
 					opponent_count = diagonal_2.count(self.opponent)
