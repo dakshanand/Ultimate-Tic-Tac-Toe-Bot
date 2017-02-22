@@ -12,17 +12,16 @@ class player4():
 		self.heuristic_table = {}
 		self.heuristic_table[0] = [0,0,0,0]
 		self.zobrist_block = []
-		# value = 1
-		# for x in range(32):
-		# 	self.zobrist_block.append(value)
-		# 	value *= 2
+		value = 1
 		for x in range(32):
-			self.zobrist_block.append(random.randint(1,1<<31))
+			self.zobrist_block.append(value)
+			value *= 2
+
 		self.transposition_table = {}
 		self.zobrist_board = []
 		self.hash_board = 0
 		for x in range(512):
-			self.zobrist_board.append(random.randint(0,1<<63))
+			self.zobrist_board.append(random.randint(0,1<<127))
 
 	def hash(self):
 		for p in range(4):
@@ -57,18 +56,18 @@ class player4():
 			if self.local_board.block_status[i].count(self.opponent) == 0:
 				player_count = self.local_board.block_status[i].count(self.player)
 				if player_count == 2:
-					score += 5
-				elif player_count == 3:
 					score += 15
+				elif player_count == 3:
+					score += 35
 
 			# for 2 and 3 blocks in a column
 			col = [x[i] for x in self.local_board.block_status]			#i'th column
 			if col.count(self.opponent) == 0:
 				player_count = col.count(self.player)
 				if player_count == 2:
-					score += 5
-				elif player_count == 3:
 					score += 15
+				elif player_count == 3:
+					score += 35
 
 		# for 2 and 3 blocks in the \ diagonal
 		diagonal_1 = []
@@ -78,9 +77,9 @@ class player4():
 		if diagonal_1.count(self.opponent) == 0:
 			player_count = diagonal_1.count(self.player)
 			if player_count == 2:
-				score += 5
-			elif player_count == 3:
 				score += 15
+			elif player_count == 3:
+				score += 35
 
 		# for 2 and 3 blocks in the ? diagonal
 		diagonal_2 = []
@@ -90,9 +89,9 @@ class player4():
 		if diagonal_2.count(self.opponent) == 0:
 			player_count = diagonal_2.count(self.player)
 			if player_count == 2:
-				score += 5
-			elif player_count == 3:
 				score += 15
+			elif player_count == 3:
+				score += 35
 
 		return score
 
@@ -101,28 +100,28 @@ class player4():
 		for i in range(4):
 			for j in range(4):
 				if self.local_board.block_status[i][j] == self.opponent:
-					score -= 10
+					score += 10
 					if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-						score -= 10
+						score += 10
 					elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
-						score -= 4
+						score += 4
 
 			# for 2 and 3 blocks in a row
 			if self.local_board.block_status[i].count(self.player) == 0:
 				opponent_count = self.local_board.block_status[i].count(self.opponent)
 				if opponent_count == 2:
-					score += 5
-				elif opponent_count == 3:
 					score += 15
+				elif opponent_count == 3:
+					score += 35
 
 			# for 2 and 3 blocks in a column
 			col = [x[i] for x in self.local_board.block_status]			#i'th column
 			if col.count(self.player) == 0:
 				opponent_count = col.count(self.opponent)
 				if opponent_count == 2:
-					score += 5
-				elif opponent_count == 3:
 					score += 15
+				elif opponent_count == 3:
+					score += 35
 
 		# for 2 and 3 blocks in the \ diagonal
 		diagonal_1 = []
@@ -132,9 +131,9 @@ class player4():
 		if diagonal_1.count(self.player) == 0:
 			opponent_count = diagonal_1.count(self.opponent)
 			if opponent_count == 2:
-				score += 5
-			elif opponent_count == 3:
 				score += 15
+			elif opponent_count == 3:
+				score += 35
 
 		# for 2 and 3 blocks in the ? diagonal
 		diagonal_2 = []
@@ -144,9 +143,9 @@ class player4():
 		if diagonal_2.count(self.player) == 0:
 			opponent_count = diagonal_2.count(self.opponent)
 			if opponent_count == 2:
-				score += 5
-			elif opponent_count == 3:
 				score += 15
+			elif opponent_count == 3:
+				score += 35
 
 		return score
 
@@ -155,7 +154,7 @@ class player4():
 		totalBonus = 0
 		center = -1
 		openMove = 0
-
+		lastscore=0
 		if self.local_board.block_status[self.last_move[0]/4][self.last_move[1]/4] != '-':
 			if self.local_board.board_status[self.last_move[0]][self.last_move[1]] == self.player:
 				score += 20
@@ -168,6 +167,7 @@ class player4():
 			for q in range(4):
 				center = 0
 				centerBonus = 0
+				lastscore=score
 
 				if self.local_board.block_status[p][q] != '-':
 					continue
@@ -202,11 +202,11 @@ class player4():
 					if self.block[i].count(self.opponent) == 0:
 						player_count = self.block[i].count(self.player)
 						if player_count == 2:
-							score += 0.5
+							score += 1.5
 							centerBonus += 0.2
 
 						elif player_count == 3:
-							score += 1.5
+							score += 3.5
 							centerBonus += 0.2
 
 					# for 2 and 3 self.blocks in a column
@@ -214,11 +214,11 @@ class player4():
 					if col.count(self.opponent) == 0:
 						player_count = col.count(self.player)
 						if player_count == 2:
-							score += 0.5
+							score += 1.5
 							centerBonus += 0.2
 
 						elif player_count == 3:
-							score += 1.5
+							score += 3.5
 							centerBonus += 0.2
 
 				# for 2 and 3 self.blocks in the \ diagonal
@@ -229,11 +229,11 @@ class player4():
 				if diagonal_1.count(self.opponent) == 0:
 					player_count = diagonal_1.count(self.player)
 					if player_count == 2:
-						score += 0.5
+						score += 1.5
 						centerBonus += 0.2
 
 					elif player_count == 3:
-						score += 1.5
+						score += 3.5
 						centerBonus += 0.2
 
 				# for 2 and 3 self.blocks in the / diagonal
@@ -244,18 +244,19 @@ class player4():
 				if diagonal_2.count(self.opponent) == 0:
 					player_count = diagonal_2.count(self.player)
 					if player_count == 2:
-						score += 0.5
+						score += 1.5
 						centerBonus += 0.2
 
 					elif player_count == 3:
-						score += 1.5
+						score += 3.5
 						centerBonus += 0.2
 
 				if center:
 					totalBonus += centerBonus
 
-				self.heuristic_table[self.hash_block[p][q]] = [-1000, score - openMove, 0, centerBonus]
+				self.heuristic_table[self.hash_block[p][q]] = [-1000, score - openMove-lastscore, 0, centerBonus]
 		return score + totalBonus
+
 
 	def heuristics_opponent_block(self):
 		score = 0
@@ -266,6 +267,7 @@ class player4():
 			for q in range(4):
 				center = 0
 				centerBonus = 0
+				lastscore=score
 
 				if self.local_board.block_status[p][q] != '-':
 					continue
@@ -286,7 +288,7 @@ class player4():
 				for i in range(4):
 					for j in range(4):
 						# winning any of the 4 center self.blocks
-						if self.block[i][j] == (self.opponent):
+						if self.block[i][j] == self.opponent:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
 								score += 0.5
 								centerBonus += 0.2
@@ -300,11 +302,11 @@ class player4():
 					if self.block[i].count(self.player) == 0:
 						opponent_count = self.block[i].count(self.opponent)
 						if opponent_count == 2:
-							score += 0.5
+							score += 1.5
 							centerBonus += 0.2
 
 						elif opponent_count == 3:
-							score += 1.5
+							score += 3.5
 							centerBonus += 0.2
 
 					# for 2 and 3 self.blocks in a column
@@ -312,11 +314,11 @@ class player4():
 					if col.count(self.player) == 0:
 						opponent_count = col.count(self.opponent)
 						if opponent_count == 2:
-							score += 0.5
+							score += 1.5
 							centerBonus += 0.2
 
 						elif opponent_count == 3:
-							score += 1.5
+							score += 3.5
 							centerBonus += 0.2
 
 				# for 2 and 3 self.blocks in the \ diagonal
@@ -327,11 +329,11 @@ class player4():
 				if diagonal_1.count(self.player) == 0:
 					opponent_count = diagonal_1.count(self.opponent)
 					if opponent_count == 2:
-						score += 0.5
+						score += 1.5
 						centerBonus += 0.2
 
 					elif opponent_count == 3:
-						score += 1.5
+						score += 3.5
 						centerBonus += 0.2
 
 				# for 2 and 3 self.blocks in the / diagonal
@@ -342,17 +344,17 @@ class player4():
 				if diagonal_2.count(self.player) == 0:
 					opponent_count = diagonal_2.count(self.opponent)
 					if opponent_count == 2:
-						score += 0.5
-						centerBonus += 0.2
-
-					elif opponent_count == 3:
 						score += 1.5
 						centerBonus += 0.2
 
-				if center:
-					totalBonus+=centerBonus
+					elif opponent_count == 3:
+						score += 3.5
+						centerBonus += 0.2
 
-				self.heuristic_table[self.hash_block[p][q]][0] = score
+				if center:
+					totalBonus += centerBonus
+
+				self.heuristic_table[self.hash_block[p][q]][0] = score-lastscore
 				self.heuristic_table[self.hash_block[p][q]][2] = centerBonus
 
 		return score + totalBonus
@@ -368,13 +370,13 @@ class player4():
 				score = 0
 				for i in range(4):
 					for j in range(4):
-						if self.block_status[i][j] == self.player:
+						if self.local_board.block_status[i][j] == self.player:
 							score += 7
-						if self.block_status[i][j] == self.opponent:
+						if self.local_board.block_status[i][j] == self.opponent:
 							score -= 7
 				return score
 
-			return (self.heuristics_player() + self.heuristics_opponent() + self.heuristics_player_block() - self.heuristics_opponent_block())
+			return (self.heuristics_player() - self.heuristics_opponent() + self.heuristics_player_block() - self.heuristics_opponent_block())
 
 		if maximini:
 			v = -1000
@@ -424,11 +426,12 @@ class player4():
     		raise Exception("Timed out!")
 
 	def move(self, board, old_move, flag):
+
 		self.player = flag
 		self.opponent = "x" if self.player == "o" else "o"
-		saved=copy.deepcopy(board)
-		self.local_board = board
-		self.hash()
+		self.local_board = copy.deepcopy(board)
+		if old_move != (-1,-1):
+			self.hash_block[old_move[0]/4][old_move[1]/4] ^= self.zobrist_block[2*((old_move[0]%4)*4+old_move[1]%4)+0]
 		signal.signal(signal.SIGALRM, self.signal_handler)
 		self.last_move=(0,0)
 		signal.alarm(15)
@@ -436,11 +439,16 @@ class player4():
 		try:
 			for i in range(4,100):
 				self.level = i
-				self.alphabeta (i, -1000, 1000, 1, old_move)
+				try:
+
+					self.alphabeta(i,-1000,1000,1,old_move)
+				except Exception as e:
+					print 'Exception occurred ', e
+					print 'Traceback printing ', sys.exc_info()[2].format_exc()
 				best = self.best_move
-				self.local_board = saved
 				print i
 
 		except Exception, msg:
 			pass
+		self.hash_block[best[0]/4][best[1]/4] ^= self.zobrist_block[2*((best[0]%4)*4+best[1]%4)+1]
 		return best
