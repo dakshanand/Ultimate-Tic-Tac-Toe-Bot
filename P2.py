@@ -317,9 +317,9 @@ class player2():
 				score = 0
 				for i in range(4):
 					for j in range(4):
-						if self.block_status[i][j] == self.player:
+						if self.local_board.block_status[i][j] == self.player:
 							score += 7
-						if self.block_status[i][j] == self.opponent:
+						if self.local_board.block_status[i][j] == self.opponent:
 							score -= 7
 				return score
 
@@ -365,24 +365,29 @@ class player2():
     		raise Exception("Timed out!")
 
 	def move(self, board, old_move, flag):
+
 		self.player = flag
 		self.opponent = "x" if self.player == "o" else "o"
-		saved=copy.deepcopy(board)
-		self.local_board = board
+		self.local_board = copy.deepcopy(board)
 		signal.signal(signal.SIGALRM, self.signal_handler)
 		self.last_move=(0,0)
 		signal.alarm(15)
 
+
+
+
 		try:
-			for i in range(3,5):
+			for i in range(4,100):
 				self.level = i
-				self.alphabeta (i, -1000, 1000, 1, old_move)
-				print i
+				try:
+					self.alphabeta(i,-1000,1000,1,old_move)
+				except Exception as e:
+					print 'Exception occurred ', e
+					print 'Traceback printing ', sys.exc_info()[2].format_exc()
 				best = self.best_move
-				self.local_board = saved
-
-
-
+				print i
 		except Exception, msg:
 			pass
+
+		print "Move",best
 		return best
