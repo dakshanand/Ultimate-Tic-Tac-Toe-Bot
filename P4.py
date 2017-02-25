@@ -167,7 +167,7 @@ class player4():
 			for q in range(4):
 				center = 0
 				centerBonus = 0
-				lastscore=score
+				lastscore = score
 
 				if self.local_board.block_status[p][q] != '-':
 					continue
@@ -190,13 +190,17 @@ class player4():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.player:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0.5
+								score += 0
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 								score += 0.2
 								centerBonus += 0.2
+							else:
+								score += 0.2
+								centerBonus += 0.2
+
 
 					# for 2 and 3 self.blocks in a row
 					if self.block[i].count(self.opponent) == 0:
@@ -254,7 +258,7 @@ class player4():
 				if center:
 					totalBonus += centerBonus
 
-				self.heuristic_table[self.hash_block[p][q]] = [-1000, score - openMove-lastscore, 0, centerBonus]
+				self.heuristic_table[self.hash_block[p][q]] = [-1000, score - openMove - lastscore, 0, centerBonus]
 		return score + totalBonus
 
 
@@ -290,13 +294,17 @@ class player4():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.opponent:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0.5
+								score += 0
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
 								score += 0.2
 								centerBonus += 0.2
+							else:
+								score += 0.2
+								centerBonus += 0.2
+
 
 					# for 2 and 3 self.blocks in a row
 					if self.block[i].count(self.player) == 0:
@@ -434,10 +442,10 @@ class player4():
 			self.hash_block[old_move[0]/4][old_move[1]/4] ^= self.zobrist_block[2*((old_move[0]%4)*4+old_move[1]%4)+0]
 		signal.signal(signal.SIGALRM, self.signal_handler)
 		self.last_move=(0,0)
-		signal.alarm(15)
-
+		signal.alarm(2)
+		self.hash()
 		try:
-			for i in range(4,100):
+			for i in range(1,4):
 				self.level = i
 				try:
 

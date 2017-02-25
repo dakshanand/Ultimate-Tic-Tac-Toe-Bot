@@ -17,27 +17,14 @@ class player5():
 		for x in range(32):
 			self.zobrist_block.append(value)
 			value *= 2
-
+		value=1
 		self.transposition_table = {}
 		self.zobrist_board = []
 		self.hash_board = 0
 		for x in range(512):
-			self.zobrist_board.append(random.randint(0,1<<127))
+			self.zobrist_board.append(random.randrange(1,1<<127))
 
-	def hash(self):
-		for p in range(4):
-			for q in range(4):
-				x = 0
-				result = 0
-				for i in range(4):
-					for j in range(4):
-						current = self.local_board.board_status[4*p+i][4*q+j]
-						if current == self.player:
-							result = result ^ self.zobrist_block[x*2+1]
-						elif current == self.opponent:
-							result = result ^ self.zobrist_block[x*2+0]
-						x += 1
-				self.hash_block[p][q] = result
+
 
 	def heuristics_player(self):
 		score = 0
@@ -168,13 +155,15 @@ class player5():
 			for q in range(4):
 				center = 0
 				centerBonus = 0
-				lastscore=score
+				lastscore = score
 
 				if self.local_board.block_status[p][q] != '-':
 					continue
 
 				if p >= 1 and p <= 2 and q >= 1 and q <= 2:
 					center = 1
+
+
 
 				if self.hash_block[p][q] in self.heuristic_table:
 					score += self.heuristic_table[self.hash_block[p][q]][1]
@@ -191,12 +180,15 @@ class player5():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.player:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0.5
+								score += 0
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
-								score += 0.2
+								score += 0
+								centerBonus += 0.2
+							else:
+								score +=0.2
 								centerBonus += 0.2
 
 					# for 2 and 3 self.blocks in a row
@@ -291,12 +283,15 @@ class player5():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.opponent:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0.5
+								score += 0
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
-								score += 0.2
+								score += 0
+								centerBonus += 0.2
+							else:
+								score +=0.2
 								centerBonus += 0.2
 
 					# for 2 and 3 self.blocks in a row
@@ -362,7 +357,7 @@ class player5():
 # 0 lowerbound
 # 1 upperbound
 	def alphabeta (self, depth, alpha, beta, maximini, old_move):
-		terminal_status = self.local_board.find_terminal_state()
+
 		if self.hash_board in self.transposition_table:
 			entry = self.transposition_table[self.hash_board]
 			if entry[0]>= beta:
@@ -371,11 +366,12 @@ class player5():
 				return entry[1]
 			alpha=max(alpha,entry[0])
 			beta=min(beta,entry[1])
+		terminal_status = self.local_board.find_terminal_state()
 		if depth == 0 or terminal_status[0] != "CONTINUE":
 			if terminal_status[0] == self.player:
-				return 160
+				return 260
 			elif terminal_status[0] != self.player and terminal_status[1] == "WON":
-				return -160
+				return -260
 			elif terminal_status[1] == "DRAW":
 				score = 0
 				for i in range(4):
@@ -432,15 +428,16 @@ class player5():
 				betaCopy = min(betaCopy, v)
 				if v <= alpha:
 					break
-			self.transposition_table[self.hash_board]=[-1000,1000]
-			entry=self.transposition_table[self.hash_board]
-			if v<=alpha:
-				entry[1]=v
-			if v>alpha and v<beta:
-				entry[0]=entry[1]=v
-			if v >beta:
-				entry[0]=v
-			return v
+		self.transposition_table[self.hash_board]=[-1000,1000]
+		entry=self.transposition_table[self.hash_board]
+		if v<=alpha:
+			entry[1]=v
+		if v>alpha and v<beta:
+			entry[0]=entry[1]=v
+		if v >beta:
+			entry[0]=v
+
+		return v
 
 
 
@@ -450,7 +447,7 @@ class player5():
 	def mtdf(self, f,depth,old_move):
 
 		g=f
-		upper =160
+		upper=160
 		lower=-160
 
 		while upper>lower:
@@ -477,10 +474,10 @@ class player5():
 			self.hash_block[old_move[0]/4][old_move[1]/4] ^= self.zobrist_block[2*((old_move[0]%4)*4+old_move[1]%4)+0]
 		signal.signal(signal.SIGALRM, self.signal_handler)
 		self.last_move=(0,0)
-		signal.alarm(3)
+		signal.alarm(15)
 
 		try:
-			for i in range(1,100):
+			for i in range(1,4):
 				self.level = i
 				try:
 					guess=0
