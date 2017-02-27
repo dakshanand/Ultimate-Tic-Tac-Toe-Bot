@@ -180,16 +180,14 @@ class player5():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.player:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0
+								score += 0.5
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
-								score += 0
+								score += 0.2
 								centerBonus += 0.2
-							else:
-								score +=0.2
-								centerBonus += 0.2
+
 
 					# for 2 and 3 self.blocks in a row
 					if self.block[i].count(self.opponent) == 0:
@@ -283,16 +281,14 @@ class player5():
 						# winning any of the 4 center self.blocks
 						if self.block[i][j] == self.opponent:
 							if i >= 1 and i <= 2 and j >= 1 and j <= 2:
-								score += 0
+								score += 0.5
 								centerBonus += 0.2
 
 							# winning any of the 4 corner self.blocks
 							elif ((i == 0 and (j == 0 or j == 3 )) or (i == 3 and (j == 0 or j == 3 ))):
-								score += 0
+								score += 0.2
 								centerBonus += 0.2
-							else:
-								score +=0.2
-								centerBonus += 0.2
+
 
 					# for 2 and 3 self.blocks in a row
 					if self.block[i].count(self.player) == 0:
@@ -377,9 +373,9 @@ class player5():
 				for i in range(4):
 					for j in range(4):
 						if self.local_board.block_status[i][j] == self.player:
-							score += 7
+							score += 15
 						if self.local_board.block_status[i][j] == self.opponent:
-							score -= 7
+							score -= 15
 				return score
 
 			return (self.heuristics_player() - self.heuristics_opponent() + self.heuristics_player_block() - self.heuristics_opponent_block())
@@ -477,7 +473,7 @@ class player5():
 		signal.alarm(15)
 
 		try:
-			for i in range(1,4):
+			for i in range(1,30):
 				self.level = i
 				try:
 					guess=0
